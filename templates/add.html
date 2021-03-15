@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>添加</title>
+</head>
+<body>
+<h3 align="center">当前登录的用户是:{{ request.session.username }}</h3>
+<form method="post">
+    <table border="1px" align="center">
+        <tr>
+            <td>任务名称：</td>
+            <td><input type="text" name="a"></td>
+        </tr>
+        <tr>
+            <td>任务描述：</td>
+            <td>
+                <textarea cols="30" rows="10" name="description"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>完成时间 ：</td>
+            <td><input type="date" name="b"></td>
+        </tr>
+        <tr>
+            <td>紧要程度：</td>
+            <td>
+                <select name="grade" id="">
+                    <option value="1">普通</option>
+                    <option value="2">中等</option>
+                    <option value="3">重要</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>负责人：</td>
+            <td>
+                <select name="c" id="">
+                    <option>--请选择--</option>
+                    <option value="张三">张三</option>
+                    <option value="李四">李四</option>
+                    <option value="王麻子">王麻子</option>
+                    <option value="袁冰欣">袁冰欣</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>参与人：</td>
+            <td>
+                <input type="checkbox" name="d" value="张三">张三
+                <input type="checkbox" name="d" value="李四">李四
+                <input type="checkbox" name="d" value="王麻子">王麻子
+                <input type="checkbox" name="d" value="袁冰欣">袁冰欣
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <input type="submit" value="新增任务">
+                <input type="button" value="返回列表" src="{% url 'index' %}">
+            </td>
+        </tr>
+    </table>
+</form>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ task.TName }}</title>
+</head>
+<body>
+<h3 align="center">当前登录的用户是:{{ request.session.username }}</h3>
+<form action="" method="post" >
+    <table  border="1px" align="center">
+        <tr>
+        <td>任务名称：</td>
+        <td>{{ task.TName }}</td>
+    </tr>
+        <tr>
+            <td>任务状态</td>
+                   <td>
+            {% if task.TState == 0 %}
+                已完成
+            {% elif task.TState == 1 %}
+                正在进行中
+            {% endif %}
+        </td>
+        </tr>
+        <tr>
+            <td>任务描述</td>
+            <td>{{ task.TDescription }}</td>
+        </tr>
+        <tr>
+            <td>计划完成时间</td>
+            <td>{{ task.TPlanFinishTimestamp }}</td>
+        </tr>
+        <tr>
+            <td>紧要程度</td>
+            <td>
+                {% if task.TGrade == 1 %}
+                    普通
+                    {% elif task.TGrade == 2 %}
+                    中等
+                    {% elif task.TGrade == 3 %}
+                    重要
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td>创建者</td>
+            <td>{{ task.TCreate.UName }}</td>
+        </tr>
+        <tr>
+            <td>负责人</td>
+            <td>{{ task.TManager.UName }}</td>
+        </tr>
+        <tr>
+            <td>参与人</td>
+                    <td>
+                        {% for t in tp %}
+                            {{ t }} |
+                        {% endfor %}
+                    </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                {% if request.session.username == task.TCreate.UName or request.session.username == task.TManager.UName %}
+                    <input type="submit" {% if task.TState == 1 %}value="标记为已完成"{% else %}value="标记为正在进行中"{% endif %} >
+                {% endif %}
+                <a href="{% url 'index' %}">
+                    <input type="button" value="返回列表">
+                </a>
+            </td>
+        </tr>
+    </table>
+</form>
+</body>
+</html>

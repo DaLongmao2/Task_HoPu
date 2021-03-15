@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <title>主页</title>
+    <script src="{% static "js/jquery-3.2.1.min.js" %}"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap-theme.min.css"
+          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+</head>
+<body>
+<div class="container">
+    <h3 align="center">当前登录的用户是:{{ request.session.username }}</h3>
+
+    <form method="post" action="">
+        <div>
+            任务名称:
+            <input type="text" id="lin" placeholder="请输入需要搜索的内容">
+
+            我的任务:
+            <input type="radio" name="select" value="我创建" {{ a }}>我创建
+            <input type="radio" name="select" value="我负责的" {{ b }}>我负责的
+            <input type="radio" name="select" value="我参与的" {{ c }}>我参与的
+            <input type="radio" name="select" value="全部与我相关的"  {{ d }}>全部与我相关的
+            <input type="submit" value="查询">
+        </div>
+        <br>
+    </form>
+    <form method="post" action="{% url "delete" %}">
+        <div>
+            <a href="{% url "add" %}" class="btn btn-default">新增任务</a>
+            <input type="submit" class="btn btn-default" value="删除选中任务" )>
+        </div>
+    <br>
+    <div>
+        <table class="table table-hover" id="table-1">
+            <tr>
+                <td><input type="checkbox" id="selectAll" name="selectAllBtn"/>全选</td>
+                <td>任务名称</td>
+                <td>任务状态</td>
+                <td>创建人</td>
+                <td>负责人</td>
+                <td>参与人</td>
+                <td>计划时间</td>
+            </tr>
+
+            {% for i in list %}
+                <tr>
+                    <td>
+                        {% if request.session.username == i.4 %}
+                            <input type="checkbox" name="checkboxBtn" value="{{ i.0 }}">
+                        {% else %}
+                            <input type="checkbox" name="checkboxBtn" disabled title="您不是创建者，不具有删除权限">
+                        {% endif %}
+                    </td>
+                    <td><a href="{% url 'detailed' id=i.0 %}">{{ i.1 }}</a></td>
+                    <td>
+                        {% if i.2 == 0 %}
+                            已完成
+                        {% elif i.2 == 1 %}
+                            正在进行中
+                        {% endif %}
+                    </td>
+                    <td>{{ i.4 }}</td>
+                    <td>{{ i.5 }}</td>
+                    <td>
+                        {% for j in i.6 %}
+                            {{ j }} |
+                        {% endfor %}
+                    </td>
+                    <td>{{ i.3 }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    </form>
+</div>
+<script src="{% static '/js/lin_search.js' %}"></script>
+<script>
+                function is_delete(){
+                var  result=window.confirm("你确定要删除吗");
+                if (result==true){
+                    btn.style.display="none";
+                }
+        }
+</script>
+<script>
+    var table = document.getElementById("table-1");
+    var input = document.getElementById("lin")
+    input.onkeyup = function () {
+      new Search(table, input)
+    }
+  </script>
+<script language="javascript" type="text/javascript">
+    /*
+    *统一设置所有条目的
+    */
+    function setItemCheckBox(flag) {
+        $(":checkbox[name=checkboxBtn]").prop("checked", flag);
+    }
+
+    $(function () {
+        //点击全选
+        $("#selectAll").click(function () {
+            //1.获取全选的状态
+            var flag = this.checked;//获取全选的状态
+            if (flag) {
+                $(this).prop("checked", true);
+            } else {
+                $(this).prop("checked", false);
+            }
+            //var flag = $(":checkbox[name=selectAll]").attr("checked");//jquery-1.5.1的用法
+            //2.让所有条目的复选框与全选的状态同步
+            //alert(flag);
+            setItemCheckBox(flag);
+        });
+        //给所有复选框添加事件
+        $(":checkbox[name=checkboxBtn]").click(function () {
+            var flagV = this.checked;
+            if (flagV) {
+                $(this).prop("checked", true);
+            } else {
+                $(this).prop("checked", false);
+            }
+            //获取所有复选框的个数
+            var len = $(":checkbox[name=checkboxBtn]").length;
+            //获取所有被选中的复选框的个数
+            var checked_len = $(":checkbox[name=checkboxBtn]:checked").length;
+            if (len == checked_len) {
+                //alert("全选中了");
+                $("#selectAll").prop("checked", true);
+            } else if (checked_len == 0) {
+                $("#selectAll").prop("checked", false);
+            } else {
+                $("#selectAll").prop("checked", false);
+            }
+        });
+    });
+</script>
+</body>
+</html>
