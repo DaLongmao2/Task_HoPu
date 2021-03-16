@@ -34,68 +34,61 @@
     <form method="post" action="{% url "delete" %}">
         <div>
             <a href="{% url "add" %}" class="btn btn-default">新增任务</a>
-            <input type="submit" class="btn btn-default" value="删除选中任务" )>
+            <input type="submit" class="btn btn-default" value="删除选中任务" onclick="confirm('确定删除吗？')" >
         </div>
-    <br>
-    <div>
-        <table class="table table-hover" id="table-1">
-            <tr>
-                <td><input type="checkbox" id="selectAll" name="selectAllBtn"/>全选</td>
-                <td>任务名称</td>
-                <td>任务状态</td>
-                <td>创建人</td>
-                <td>负责人</td>
-                <td>参与人</td>
-                <td>计划时间</td>
-            </tr>
-
-            {% for i in list %}
+        <br>
+        <div>
+            <table class="table table-hover" id="table-1">
                 <tr>
-                    <td>
-                        {% if request.session.username == i.4 %}
-                            <input type="checkbox" name="checkboxBtn" value="{{ i.0 }}">
-                        {% else %}
-                            <input type="checkbox" name="checkboxBtn" disabled title="您不是创建者，不具有删除权限">
-                        {% endif %}
-                    </td>
-                    <td><a href="{% url 'detailed' id=i.0 %}">{{ i.1 }}</a></td>
-                    <td>
-                        {% if i.2 == 0 %}
-                            已完成
-                        {% elif i.2 == 1 %}
-                            正在进行中
-                        {% endif %}
-                    </td>
-                    <td>{{ i.4 }}</td>
-                    <td>{{ i.5 }}</td>
-                    <td>
-                        {% for j in i.6 %}
-                            {{ j }} |
-                        {% endfor %}
-                    </td>
-                    <td>{{ i.3 }}</td>
+                    <td><input type="checkbox" id="selectAll" name="selectAllBtn"/></td>
+                    <td>任务名称</td>
+                    <td>任务状态</td>
+                    <td>创建人</td>
+                    <td>负责人</td>
+
+                    <td>参与人</td>
+                    <td>计划时间</td>
                 </tr>
-            {% endfor %}
-        </table>
-    </div>
+
+                {% for i in list %}
+                    <tr>
+                        <td>
+                            {% if request.session.username == i.4 %}
+                                <input type="checkbox" name="checkboxBtn" value="{{ i.0 }}">
+                            {% else %}
+                                <input type="checkbox" name="checkboxBtn" disabled title="您不是创建者，不具有删除权限">
+                            {% endif %}
+                        </td>
+                        <td><a href="{% url 'detailed' id=i.0 %}">{{ i.1 }}</a></td>
+                        <td>
+                            {% if i.2 == 0 %}
+                                已完成
+                            {% elif i.2 == 1 %}
+                                正在进行中
+                            {% endif %}
+                        </td>
+                        <td>{{ i.4 }}</td>
+                        <td>{{ i.5 }}</td>
+                        <td>
+                            {% for j in i.6 %}
+                                {{ j }} |
+                            {% endfor %}
+                        </td>
+                        <td>{{ i.3 }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
     </form>
 </div>
 <script src="{% static '/js/lin_search.js' %}"></script>
 <script>
-                function is_delete(){
-                var  result=window.confirm("你确定要删除吗");
-                if (result==true){
-                    btn.style.display="none";
-                }
-        }
-</script>
-<script>
     var table = document.getElementById("table-1");
     var input = document.getElementById("lin")
     input.onkeyup = function () {
-      new Search(table, input)
+        new Search(table, input)
     }
-  </script>
+</script>
 <script language="javascript" type="text/javascript">
     /*
     *统一设置所有条目的

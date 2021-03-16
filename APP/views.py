@@ -125,7 +125,7 @@ def delete(request):
             TaskTab.objects.filter(id=box).delete()
             TaskPartnerTab.objects.filter(TaskID=box).delete()
             return redirect('index')
-    return HttpResponse('请求错误')
+    return redirect('index')
 
 
 def detailed(request, id):
