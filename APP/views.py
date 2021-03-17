@@ -1,9 +1,19 @@
-from django.http import HttpResponse
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
-
 from APP.models import *
 
 
+def check_login(func):
+    def inner(request, *args, **kwargs):
+        if request.session.get('is_login'):
+            return func(request, *args, **kwargs)
+        else:
+            return redirect('login')
+
+    return inner
+
+
+@check_login
 def index(request):
     y = []
     select = request.POST.get('select')
@@ -12,7 +22,7 @@ def index(request):
     if select == '我创建':
         for t in task:
             A = t.TCreate.UName == request.session.get('username')
-            if A :
+            if A:
                 x = []
                 x.append(t.id)
                 x.append(t.TName)
@@ -57,6 +67,7 @@ def index(request):
             c = 'checked'
         return render(request, 'index.html', {"list": y, "c": c})
 
+    # 默认与我相关的
     for t in task:
         print(t)
         A = t.TCreate.UName == request.session.get('username')
@@ -91,9 +102,12 @@ def login(request):
             print(request.session.get('is_login'))
             print(request.session.get('username'))
             return redirect('index')
+        else:
+            return JsonResponse("{'code': 201}")
     return render(request, 'login.html')
 
 
+@check_login
 def add(request):
     if request.method == 'POST':
         # sadf 2021-03-11 张三 ['张三', '李四']
@@ -117,8 +131,9 @@ def add(request):
     return render(request, 'add.html')
 
 
+@check_login
 def delete(request):
-    if request.method=='POST':
+    if request.method == 'POST':
         box_list = request.POST.getlist("checkboxBtn")
         for box in box_list:
             print(box)
@@ -128,6 +143,7 @@ def delete(request):
     return redirect('index')
 
 
+@check_login
 def detailed(request, id):
     task = TaskTab.objects.get(id=id)
     if request.method == 'POST':
@@ -141,3 +157,11 @@ def detailed(request, id):
     for t_p in task_partner:
         tp.append(t_p.UserID.UName)
     return render(request, 'detailed.html', {'task': task, 'tp': tp})
+
+
+@check_login
+def logout(request):
+    # if not request.session.get('is_login'):
+    #     return redirect('index')
+    del request.session['is_login']
+    return redirect('login')
